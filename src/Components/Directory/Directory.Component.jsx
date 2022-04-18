@@ -1,6 +1,7 @@
 import CategoriesComponent from "../categories-component/Categories.component";
 import categories from './categories.json'
 import './directory.styles.scss'
+import React from 'react'
 
 const Directory = () => {
   return (

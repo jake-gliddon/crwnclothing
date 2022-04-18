@@ -1,4 +1,5 @@
 import './categories.styles.scss'
+import React from 'react'
 
 const CategoriesComponent = ({category}) => {
     const {title, imageUrl} = category
