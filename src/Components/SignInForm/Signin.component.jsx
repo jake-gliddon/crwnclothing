@@ -30,10 +30,16 @@ const SignInForm = () => {
         try {
            const response = await signInUserWithEmailAndPassword(email, password)
         } catch (error) {
-            if(error.code === 'auth/wrong-password'){
-                alert('Wrong Password, Try again')
-            }
-            console.log('User Creation encountered an error', error)
+            switch (error.code) {
+                case 'auth/wrong-password':
+                  alert('incorrect password for email');
+                  break;
+                case 'auth/user-not-found':
+                  alert('no user associated with this email');
+                  break;
+                default:
+                  console.log(error);
+              }
             
         }
     }
