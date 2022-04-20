@@ -1,4 +1,5 @@
-import {createAuthUserWithEmailAndPassword, createUserDocFromAuth } from '../../Utils/Firebase/Firebase.utils'
+import {signInWithGooglePopup } from '../../Utils/Firebase/Firebase.utils'
+import { createUserDocFromAuth, signInUserWithEmailAndPassword } from '../../Utils/Firebase/Firebase.utils'
 import { useState } from "react"
 import Forminput from '../form-input/Forminput.component'
 import './signin.styles.scss'
@@ -17,24 +18,23 @@ const SignInForm = () => {
         setFormFields(defaultFormFields);
 
     } 
+
+    const logGoogleUser = async () => {
+        const {user} = await signInWithGooglePopup();
+        const userDocRef = await createUserDocFromAuth(user)
+    }
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(password !== {}) {
-            alert('passwords do not match');
-            return;
-            
-        }
         
         try {
-            const {user} = await createAuthUserWithEmailAndPassword(email, password);
-            await createUserDocFromAuth(user, {})
-            resetFormFields();
+           const response = await signInUserWithEmailAndPassword(email, password)
         } catch (error) {
-            if(error.code === 'auth/email-already-in-use'){
-                alert('Email already in use, Please try again with a different email.')
+            if(error.code === 'auth/wrong-password'){
+                alert('Wrong Password, Try again')
             }
             console.log('User Creation encountered an error', error)
+            
         }
     }
     const handleChange = (e) => {
@@ -43,13 +43,15 @@ const SignInForm = () => {
     }
     return (
         <section className='sign-up-container'>
-            <h2>Don't have an account?</h2>
+            <h2>Already have an account?</h2>
             <span>Sign In</span>
             <form className="group"  onSubmit={handleSubmit}>
                 <Forminput label='Email' required type='email' onChange={handleChange} name='email' value={email}/>
                 <Forminput label='Password' required type='password' onChange={handleChange} name='password' value={password}/>
+                <div className='buttons-container'>
                 <Button buttonType='inverted' type="submit">Sign In</Button>
-                <Button buttonType='google' type="submit">Sign In with Google</Button>
+                <Button buttonType='google' onClick={logGoogleUser}>Google Sign In</Button>
+                </div>
             </form>
         </section>
     )
