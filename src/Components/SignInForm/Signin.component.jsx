@@ -1,5 +1,5 @@
 import {signInWithGooglePopup } from '../../Utils/Firebase/Firebase.utils'
-import { createUserDocFromAuth, signInUserWithEmailAndPassword } from '../../Utils/Firebase/Firebase.utils'
+import { signInUserWithEmailAndPassword, createUserDocFromAuth } from '../../Utils/Firebase/Firebase.utils'
 import { useState } from "react"
 import Forminput from '../form-input/Forminput.component'
 import './signin.styles.scss'
@@ -16,19 +16,20 @@ const SignInForm = () => {
 
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
-
+        
     } 
 
     const logGoogleUser = async () => {
-        const {user} = await signInWithGooglePopup();
-        const userDocRef = await createUserDocFromAuth(user)
+        await signInWithGooglePopup();
+
     }
     
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         try {
-           const response = await signInUserWithEmailAndPassword(email, password)
+           const {user} = await signInUserWithEmailAndPassword(email, password)
+           resetFormFields();
         } catch (error) {
             switch (error.code) {
                 case 'auth/wrong-password':
